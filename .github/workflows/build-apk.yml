@@ -1,0 +1,22 @@
+name: Build Android APK
+on:
+  push:
+    branches: [ "main" ]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Unzip project
+        run: unzip nervous-green-cookies\ \(1\).zip
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: npm install
+        working-directory: nervous-green-cookies
+      - uses: expo/expo-github-action@v8
+        with:
+          expo-version: latest
+          token: ${{ secrets.EXPO_TOKEN }}
+      - run: npx expo build:android -t apk --no-wait
+        working-directory: nervous-green-cookies
