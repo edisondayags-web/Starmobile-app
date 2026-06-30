@@ -7,15 +7,19 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      
       - name: Unzip project
         run: unzip *.zip
+        
       - uses: actions/setup-node@v4
         with:
           node-version: 22
+          
       - run: npm install
         working-directory: nervous-green-cookies
+        
       - uses: expo/expo-github-action@v8
         with:
           expo-version: latest
-      - run: npx eas build -p android --profile production --non-interactive --output build.apk
-        working-directory: nervous-green-cookies
+          eas-version: latest
+          token: ${{ secrets.EAS_TOKEN }}
