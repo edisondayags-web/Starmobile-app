@@ -7,19 +7,27 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Unzip project
         run: unzip *.zip
-        
+
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-          
+
       - run: npm install
         working-directory: nervous-green-cookies
-        
+
       - uses: expo/expo-github-action@v8
         with:
           expo-version: latest
           eas-version: latest
           token: ${{ secrets.EAS_TOKEN }}
+
+      - name: Build APK
+        run: cd nervous-green-cookies && npx expo prebuild --platform android --clean && cd android && ./gradlew assembleDebug
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: build.apk
+          path: nervous-green-cookies/**/*.apk
