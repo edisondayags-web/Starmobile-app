@@ -1,5 +1,5 @@
- Build Android APK
-on:
+name: Build Android APK
+ on: 
   push:
     branches: [ "main" ]
 jobs:
