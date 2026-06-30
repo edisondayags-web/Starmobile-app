@@ -1,4 +1,4 @@
-name: Build Android APK
+ Build Android APK
 on:
   push:
     branches: [ "main" ]
@@ -15,6 +15,12 @@ jobs:
         with:
           node-version: 22
 
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+
       - run: npm install
         working-directory: nervous-green-cookies
 
@@ -24,10 +30,16 @@ jobs:
           eas-version: latest
           token: ${{ secrets.EAS_TOKEN }}
 
-      - name: Build APK
-        run: cd nervous-green-cookies && npx expo prebuild --platform android --clean && cd android && ./gradlew assembleDebug
+      - name: Prebuild native Android project
+        run: cd nervous-green-cookies && npx expo prebuild --platform android --clean
+
+      - name: Make gradlew executable
+        run: chmod +x nervous-green-cookies/android/gradlew
+
+      - name: Build release APK with Gradle
+        run: cd nervous-green-cookies/android && ./gradlew assembleRelease
 
       - uses: actions/upload-artifact@v4
         with:
           name: build.apk
-          path: nervous-green-cookies/**/*.apk
+          path: nervous-green-cookies/android/app/build/outputs/apk/release/*.apk
