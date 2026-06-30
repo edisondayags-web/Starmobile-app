@@ -51,7 +51,7 @@ jobs:
       - name: Install required dependencies
         run: |
           cd ur-scanner
-          npx expo install expo-camera expo-av @react-native-async-storage/async-storage react-native-reanimated firebase expo-firebase-crashlytics
+          npx expo install expo-camera expo-av @react-native-async-storage/async-storage react-native-reanimated firebase
 
       - name: Verify final project structure (debug)
         run: |
