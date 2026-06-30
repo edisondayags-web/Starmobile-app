@@ -38,7 +38,11 @@ import {
   serverTimestamp,
 } from 'firebase/firestore';
 import { getAnalytics, logEvent } from 'firebase/analytics';
-import * as Crashlytics from 'expo-firebase-crashlytics';
+const Crashlytics = {
+  log: (msg) => console.log('[LOG]', msg),
+  recordError: (err) => console.error('[ERROR]', err),
+  setUserId: (id) => console.log('[USER]', id),
+};
 
 const brandPink = '#FF4D8D';
 const brandPinkDark = '#D6336C';
