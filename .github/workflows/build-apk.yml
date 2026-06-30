@@ -17,6 +17,5 @@ jobs:
       - uses: expo/expo-github-action@v8
         with:
           expo-version: latest
-           token: ${{ secrets.EXPO_TOKEN }}
-- run: npx eas build -p android --profile production --non-interactive --output build.apk
-  working-directory: nervous-green-cookies 
+      - run: npx eas build -p android --profile production --non-interactive --output build.apk
+    working-directory: nervous-green-cookies
