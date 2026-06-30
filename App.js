@@ -452,7 +452,7 @@ export default function App() {
       >
         <View style={styles.modalOverlay}>
           <ImageBackground
-            source={require('./assets/ur-scanner-logo-bg.png')}
+            source={require('./ChatGPT Image Jun 29, 2026, 08_23_07 AM.png')}
             style={styles.modalContent}
             imageStyle={styles.modalBgImage}
             resizeMode="cover"
