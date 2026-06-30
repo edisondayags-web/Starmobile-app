@@ -1,4 +1,3 @@
-import { extract_merchant_name, validate_qrph } from 'rust-qr-core';
 import React, { useState, useEffect, useCallback } from 'react';
 import {
   View,
@@ -113,19 +112,50 @@ async function firewallAllow() {
   return true;
 }
 
+function getEMVTag(data, tag) {
+  let i = 0;
+  while (i < data.length - 4) {
+    const id = data.substr(i, 2);
+    const len = parseInt(data.substr(i + 2, 2), 10);
+    if (isNaN(len)) break;
+    const value = data.substr(i + 4, len);
+    if (id === tag) return value;
+    i += 4 + len;
+  }
+  return null;
+}
+
 function extractMerchantName(qrData) {
   try {
-    return extract_merchant_name(qrData) || 'Unknown Merchant';
+    const name = getEMVTag(qrData, '59');
+    return name && name.trim() ? name.trim() : 'Unknown Merchant';
   } catch (e) {
     Crashlytics.recordError(e);
     return 'Unknown Merchant';
   }
 }
 
+function crc16ccitt(data) {
+  let crc = 0xffff;
+  for (let i = 0; i < data.length; i++) {
+    crc ^= data.charCodeAt(i) << 8;
+    for (let b = 0; b < 8; b++) {
+      crc = (crc & 0x8000) ? ((crc << 1) ^ 0x1021) : (crc << 1);
+      crc &= 0xffff;
+    }
+  }
+  return crc.toString(16).toUpperCase().padStart(4, '0');
+}
+
 function isValidQRPH(data) {
-  if (!data || data.length > 512) return false;
+  if (!data || data.length > 512 || data.length < 10) return false;
   try {
-    return validate_qrph(data);
+    if (!data.startsWith('000201')) return false;
+    if (getEMVTag(data, '63') === null) return false;
+    const payloadWithoutCrc = data.slice(0, -4);
+    const declaredCrc = data.slice(-4).toUpperCase();
+    const computedCrc = crc16ccitt(payloadWithoutCrc + '6304');
+    return declaredCrc === computedCrc;
   } catch {
     return data.startsWith('000201') && data.includes('63');
   }
