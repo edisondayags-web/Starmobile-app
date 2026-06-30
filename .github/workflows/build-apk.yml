@@ -8,9 +8,6 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Unzip project
-        run: unzip *.zip
-
       - uses: actions/setup-node@v4
         with:
           node-version: 22
@@ -21,8 +18,13 @@ jobs:
           distribution: temurin
           java-version: 17
 
+      - name: Create Expo project structure
+        run: |
+          npx create-expo-app@latest ur-scanner --template blank --no-install
+          cp App.js ur-scanner/App.js
+
       - run: npm install
-        working-directory: nervous-green-cookies
+        working-directory: ur-scanner
 
       - uses: expo/expo-github-action@v8
         with:
@@ -30,16 +32,21 @@ jobs:
           eas-version: latest
           token: ${{ secrets.EAS_TOKEN }}
 
+      - name: Install required dependencies
+        run: |
+          cd ur-scanner
+          npx expo install expo-camera expo-av @react-native-async-storage/async-storage react-native-reanimated firebase
+
       - name: Prebuild native Android project
-        run: cd nervous-green-cookies && npx expo prebuild --platform android --clean
+        run: cd ur-scanner && npx expo prebuild --platform android --clean
 
       - name: Make gradlew executable
-        run: chmod +x nervous-green-cookies/android/gradlew
+        run: chmod +x ur-scanner/android/gradlew
 
       - name: Build release APK with Gradle
-        run: cd nervous-green-cookies/android && ./gradlew assembleRelease
+        run: cd ur-scanner/android && ./gradlew assembleRelease
 
       - uses: actions/upload-artifact@v4
         with:
           name: build.apk
-          path: nervous-green-cookies/android/app/build/outputs/apk/release/*.apk
+          path: ur-scanner/android/app/build/outputs/apk/release/*.apk
