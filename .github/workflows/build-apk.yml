@@ -8,6 +8,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: List repo files (debug)
+        run: ls -la
+
       - uses: actions/setup-node@v4
         with:
           node-version: 22
@@ -19,9 +22,10 @@ jobs:
           java-version: 17
 
       - name: Create Expo project structure
-        run: |
-          npx create-expo-app@latest ur-scanner --template blank --no-install
-          cp App.js ur-scanner/App.js
+        run: npx create-expo-app@latest ur-scanner --template blank --no-install
+
+      - name: Copy App.js into project
+        run: cp "App.js" "ur-scanner/App.js"
 
       - run: npm install
         working-directory: ur-scanner
