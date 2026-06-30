@@ -12,6 +12,6 @@
     },
     "plugins": [
       "expo-camera"
-    ]
+    ["expo-firebase-core"]
   }
 }
