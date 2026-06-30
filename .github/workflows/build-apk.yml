@@ -27,6 +27,18 @@ jobs:
       - name: Copy App.js into project
         run: cp "App.js" "ur-scanner/App.js"
 
+      - name: Copy logo image into project
+        run: cp "ChatGPT Image Jun 29, 2026, 08_23_07 AM.png" "ur-scanner/ChatGPT Image Jun 29, 2026, 08_23_07 AM.png"
+
+      - name: Copy app.json into project (if present)
+        run: |
+          if [ -f "app.json" ]; then
+            cp "app.json" "ur-scanner/app.json"
+            echo "app.json copied."
+          else
+            echo "No custom app.json found, using default from create-expo-app."
+          fi
+
       - run: npm install
         working-directory: ur-scanner
 
@@ -40,6 +52,12 @@ jobs:
         run: |
           cd ur-scanner
           npx expo install expo-camera expo-av @react-native-async-storage/async-storage react-native-reanimated firebase
+
+      - name: Verify final project structure (debug)
+        run: |
+          ls -la ur-scanner
+          echo "--- app.json contents ---"
+          cat ur-scanner/app.json
 
       - name: Prebuild native Android project
         run: cd ur-scanner && npx expo prebuild --platform android --clean
