@@ -8,7 +8,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Unzip project
-        run: unzip nervous-green-cookies\ \(1\).zip
+        run: unzip *.zip
       - uses: actions/setup-node@v4
         with:
           node-version: 22
@@ -18,4 +18,4 @@ jobs:
         with:
           expo-version: latest
       - run: npx eas build -p android --profile production --non-interactive --output build.apk
-     working-directory: nervous-green-cookies
+        working-directory: nervous-green-cookies
