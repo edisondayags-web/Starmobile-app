@@ -1,15 +1,17 @@
 {
   "expo": {
-    "name": "UR scanner",
+    "name": "UR Scanner",
     "slug": "starmobile",
     "version": "1.0.0",
-    "icon": "./assets/icon.png",
-    "splash": {
-      "image": "./assets/splash.png",
-      "resizeMode": "contain"
-    },
+    "orientation": "portrait",
     "android": {
-      "package": "com.edison.starmobile"
-    }
+      "package": "com.edison.starmobile",
+      "permissions": [
+        "CAMERA"
+      ]
+    },
+    "plugins": [
+      "expo-camera"
+    ]
   }
 }
